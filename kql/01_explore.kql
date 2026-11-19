@@ -1,0 +1,31 @@
+// DeckPulse — explore the GateReadings table after local-file ingestion.
+// Run these in the default queryset attached to the DeckPulseEventhouse KQL database.
+// Run one query at a time.
+
+// 1. Confirm every sample row arrived. Expected: 6,000.
+GateReadings
+| count
+
+// 2. Preview a handful of rows and check that the columns look right.
+GateReadings
+| take 10
+
+// 3. Average occupancy and number of readings per deck.
+GateReadings
+| summarize AvgOccupancyPct = avg(OccupancyPct), Readings = count() by Deck
+| order by AvgOccupancyPct desc
+
+// 4. Near-full spikes. Status is ALERT when OccupancyPct is above 88.
+GateReadings
+| where Status == "ALERT"
+| project Timestamp, GateId, Deck, OccupancyPct
+| order by Timestamp asc
+
+// 5. ALERT count by deck so the ops brief has a watch order.
+GateReadings
+| where Status == "ALERT"
+| summarize Alerts = count() by Deck
+| order by Alerts desc
+
+// 6. Inspect the stored schema, including column types.
+.show table GateReadings schema as json

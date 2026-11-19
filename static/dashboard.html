@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeckPulse brief</title>
+  <style>
+    :root {
+      --bg: #140f0c;
+      --card: #241912;
+      --ink: #f4ebe3;
+      --muted: #b9a593;
+      --accent: #c45c26;
+      --warn: #e25b4a;
+    }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: radial-gradient(1100px 560px at 12% -8%, #3a2418, var(--bg));
+      color: var(--ink);
+    }
+    main { max-width: 960px; margin: 0 auto; padding: 36px 20px 64px; }
+    h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.02em; }
+    .sub { color: var(--muted); margin-bottom: 28px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .card {
+      background: var(--card);
+      border: 1px solid #3a2a1f;
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .value { font-size: 28px; margin-top: 8px; font-weight: 650; }
+    .warn { color: var(--warn); }
+    table { width: 100%; border-collapse: collapse; margin-top: 28px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #3a2a1f; }
+    th { color: var(--muted); font-weight: 550; font-size: 13px; }
+    #status { margin-top: 18px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>DeckPulse</h1>
+    <p class="sub">Laptop brief for parking-garage gate occupancy before (and after) Eventhouse ingest.</p>
+    <div class="grid">
+      <div class="card"><div class="label">Rows</div><div class="value" id="rows">-</div></div>
+      <div class="card"><div class="label">ALERT</div><div class="value warn" id="alerts">-</div></div>
+      <div class="card"><div class="label">Alert rate</div><div class="value" id="rate">-</div></div>
+      <div class="card"><div class="label">Watch first</div><div class="value" id="watch" style="font-size:20px">-</div></div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Deck</th><th>Avg occupancy %</th><th>Readings</th><th>ALERT</th></tr>
+      </thead>
+      <tbody id="decks"></tbody>
+    </table>
+    <p id="status">Loading brief...</p>
+  </main>
+  <script>
+    async function loadBrief() {
+      const res = await fetch("/api/brief");
+      const data = await res.json();
+      document.getElementById("rows").textContent = data.row_count.toLocaleString();
+      document.getElementById("alerts").textContent = data.alert_count.toLocaleString();
+      document.getElementById("rate").textContent = data.alert_rate.toFixed(2) + "%";
+      const top = (data.alerts_by_deck || [])[0];
+      document.getElementById("watch").textContent = top ? top.deck : "n/a";
+      const alertMap = Object.fromEntries(
+        (data.alerts_by_deck || []).map((d) => [d.deck, d.alerts])
+      );
+      const body = document.getElementById("decks");
+      body.innerHTML = "";
+      for (const row of data.deck_summary) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.deck}</td>
+          <td>${row.avg_occupancy_pct.toFixed(2)}</td>
+          <td>${row.readings.toLocaleString()}</td>
+          <td>${alertMap[row.deck] || 0}</td>`;
+        body.appendChild(tr);
+      }
+      document.getElementById("status").textContent =
+        `Peak ${data.peak_gate} at ${data.peak_occupancy_pct.toFixed(2)}% on ${data.peak_deck}`;
+    }
+    loadBrief().catch((err) => {
+      document.getElementById("status").textContent = "Failed to load brief: " + err;
+    });
+  </script>
+</body>
+</html>
