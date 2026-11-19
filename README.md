@@ -4,7 +4,7 @@
 
 DeckPulse is an experimental PoC. It generates a 6,000-row garage gate CSV, mirrors the same brief on a laptop, and documents the Fabric Eventhouse create-and-ingest path so those readings can be queried with KQL.
 
-![DeckPulse title animation](https://raw.githubusercontent.com/aniket-work/DeckPulse/main/images/title-animation.gif)
+![DeckPulse title animation](https://raw.githubusercontent.com/aniket-work/DeckPulse/58446d6e0fb018e4f92f6b9afccc258ab658e63b/images/title-animation.gif)
 
 ## Why this experiment
 
@@ -12,7 +12,7 @@ I wanted a practical garage-ops story for Eventhouse work. Gate occupancy, wait 
 
 ## What you get
 
-![Title diagram](https://raw.githubusercontent.com/aniket-work/DeckPulse/main/images/title_diagram.png)
+![Title diagram](https://raw.githubusercontent.com/aniket-work/DeckPulse/58446d6e0fb018e4f92f6b9afccc258ab658e63b/images/title_diagram.png)
 
 1. Synthetic CSV: `data/gate_telemetry.csv` (seed 19, 6,000 rows)
 2. Local brief: `python main.py`
@@ -43,7 +43,7 @@ Campus leads on average occupancy. Midtown leads on alerts. The watch order foll
 
 ## Architecture
 
-![Architecture](https://raw.githubusercontent.com/aniket-work/DeckPulse/main/images/architecture_diagram.png)
+![Architecture](https://raw.githubusercontent.com/aniket-work/DeckPulse/58446d6e0fb018e4f92f6b9afccc258ab658e63b/images/architecture_diagram.png)
 
 ## Quick start
 
@@ -68,7 +68,7 @@ Open `http://127.0.0.1:8000/`.
 
 ## Fabric Eventhouse path
 
-![Flow](https://raw.githubusercontent.com/aniket-work/DeckPulse/main/images/flow_diagram.png)
+![Flow](https://raw.githubusercontent.com/aniket-work/DeckPulse/58446d6e0fb018e4f92f6b9afccc258ab658e63b/images/flow_diagram.png)
 
 Full steps live in [`docs/eventhouse-ingest.md`](docs/eventhouse-ingest.md). Short version:
 
@@ -80,7 +80,7 @@ Full steps live in [`docs/eventhouse-ingest.md`](docs/eventhouse-ingest.md). Sho
 
 ## Sequence
 
-![Sequence](https://raw.githubusercontent.com/aniket-work/DeckPulse/main/images/sequence_diagram.png)
+![Sequence](https://raw.githubusercontent.com/aniket-work/DeckPulse/58446d6e0fb018e4f92f6b9afccc258ab658e63b/images/sequence_diagram.png)
 
 ## Project layout
 
